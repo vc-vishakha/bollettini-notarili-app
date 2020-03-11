@@ -1,0 +1,25 @@
+<ion-tabs>
+
+  <ion-tab-bar slot="bottom" *ngIf="displayFooter">
+    <ion-tab-button tab="home">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>{{'home' | translate}}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="bookmarks">
+      <ion-icon name="star"></ion-icon>
+      <ion-label>{{ 'bookmarks' |translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="downloads">
+      <ion-icon name="cloud-offline-outline"></ion-icon>
+      <ion-label>{{ 'offlineDownloaded' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="logout()">
+      <ion-icon name="log-out-outline"></ion-icon>
+      <ion-label>{{ 'logout' | translate }}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+</ion-tabs>

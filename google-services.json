@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "452470009134",
+    "firebase_url": "https://bollettini-notarili.firebaseio.com",
+    "project_id": "bollettini-notarili",
+    "storage_bucket": "bollettini-notarili.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452470009134:android:e06181d921d4a2a6dfdebf",
+        "android_client_info": {
+          "package_name": "io.ionic.bollettininotarili"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452470009134-9pehn8s4h8fo2gf7rmodqmdiro5lm78n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBri5TbXnJjt_xdjoOze69zulCFGfnT0iY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452470009134-9pehn8s4h8fo2gf7rmodqmdiro5lm78n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
