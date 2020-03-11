@@ -24,20 +24,23 @@ export class PushNotificationService {
       private authService: AuthService
     ) {
         // to check if we have permission
+        
+    }
+
+    initPushConfig(){
         this.push.hasPermission()
-            .then((res) => {
-                console.log('res');
-                if (res.isEnabled) {
-                    console.log('We have permission to send push notifications');
-                    this.initPushNotification();
-                } else {
-                    console.log('We do not have permission to send push notifications');
-                }
-            })
-            .catch(err => {
-                console.log('err', err);
-                // alert(err);
-            });
+        .then((res) => {
+            console.log('res');
+            if (res.isEnabled) {
+                console.log('We have permission to send push notifications');
+                this.initPushNotification();
+            } else {
+                console.log('We do not have permission to send push notifications');
+            }
+        })
+        .catch(err => {
+            console.log('err', err);
+        });
     }
 
     /**
@@ -47,11 +50,11 @@ export class PushNotificationService {
         const pushObject: PushObject = this.push.init(this.pushOptions);
 
         pushObject.on('notification').subscribe((notification: any) => {
-          console.log('Received a notification', notification);
+            console.log('Received a notification', notification);
         });
 
         pushObject.on('registration').subscribe((registration: any) => {
-            // console.log('Device registered', registration);
+            console.log('Device registered', registration);
             if ( registration && registration.registrationId ) {
               this.authService.deviceRegId.next(registration.registrationId);
             }
