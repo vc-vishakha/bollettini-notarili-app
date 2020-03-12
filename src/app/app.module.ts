@@ -13,6 +13,7 @@ import { Push } from '@ionic-native/push/ngx';
 import { LayoutModule } from './core/layout/layout.module';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,6 +34,7 @@ import { File } from '@ionic-native/file/ngx';
     // tslint:disable-next-line: deprecation
     FileTransfer,
     File,
+    InAppBrowser,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

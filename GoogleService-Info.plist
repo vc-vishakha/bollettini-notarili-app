@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>452470009134-dogo96juppj6fcpg0863bkj891nhet7f.apps.googleusercontent.com</string>
+	<string>104606958058-781sbktq82vknenj5f09d303bfm2imot.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.452470009134-dogo96juppj6fcpg0863bkj891nhet7f</string>
+	<string>com.googleusercontent.apps.104606958058-781sbktq82vknenj5f09d303bfm2imot</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCZ_gu_o2RAucPRkV474ZwdFvZgPBBHnB8</string>
+	<string>AIzaSyBYq-b5l_txkGf8Hhuaya6GmlYMRprN3uI</string>
 	<key>GCM_SENDER_ID</key>
-	<string>452470009134</string>
+	<string>104606958058</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>io.ionic.bollettininotar</string>
+	<string>ios.bollettininotarili</string>
 	<key>PROJECT_ID</key>
-	<string>bollettini-notarili</string>
+	<string>bollettini-notarili-f6e3c</string>
 	<key>STORAGE_BUCKET</key>
-	<string>bollettini-notarili.appspot.com</string>
+	<string>bollettini-notarili-f6e3c.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:452470009134:ios:83b7b3ea4e57a7c0dfdebf</string>
+	<string>1:104606958058:ios:2a2702835d3dfe8a1db293</string>
 	<key>DATABASE_URL</key>
-	<string>https://bollettini-notarili.firebaseio.com</string>
+	<string>https://bollettini-notarili-f6e3c.firebaseio.com</string>
 </dict>
 </plist>

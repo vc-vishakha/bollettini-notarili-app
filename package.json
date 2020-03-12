@@ -33,6 +33,7 @@
         "cordova-android": "8.1.0",
         "cordova-ios": "5.1.1",
         "cordova-plugin-file-transfer": "^1.7.1",
+        "cordova-plugin-inappbrowser": "^3.2.0",
         "cordova-sqlite-storage": "^4.0.0",
         "core-js": "^3.6.4",
         "ng2-pdf-viewer": "^6.1.2",
@@ -83,7 +84,8 @@
             "cordova-plugin-ionic-keyboard": {},
             "cordova-plugin-file-transfer": {},
             "cordova-plugin-file": {},
-            "phonegap-plugin-push": {}
+            "phonegap-plugin-push": {},
+            "cordova-plugin-inappbrowser": {}
         }
     }
 }

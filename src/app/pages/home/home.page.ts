@@ -9,6 +9,8 @@ import { HomeService } from './home.service';
 import { ApiResponseModel, Category, FileModel } from 'src/app/core/models';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -35,7 +37,9 @@ export class HomePage implements OnInit {
     private toastrService: ToastrService,
     private homeService: HomeService,
     private translateService: TranslateService,
-    private router: Router
+    private router: Router,
+    public inApp: InAppBrowser,
+    private platform: Platform
   ) { }
 
   ngOnInit() { }
@@ -89,34 +93,56 @@ export class HomePage implements OnInit {
       this.router.navigate(['/file-view']);
     } else if (action === 'download') {
 
-      this.fileService.checkDirDownload(fileUrl, file._source.title)
-        .then((filepath) => {
-          this.translateService.get('fileSavedMsg')
-            .subscribe((text) => {
-              let translated = 'File saved in';
-              if (text) {
-                translated = text;
-              }
-              this.toastrService.presentToast(translated + ' ' + filepath);
+      if (this.platform.is('ios')) {
+        const IabOptions: InAppBrowserOptions = {
+          location: 'yes',
+          hidden: 'no',
+          clearcache: 'yes',
+          clearsessioncache: 'yes',
+          zoom: 'yes', // Android only ,shows browser zoom controls
+          hardwareback: 'yes',
+          mediaPlaybackRequiresUserAction: 'no',
+          shouldPauseOnSuspend: 'no', // Android only
+          closebuttoncaption: 'Close', // iOS only
+          disallowoverscroll: 'no', // iOS only
+          toolbar: 'yes', // iOS only
+          enableViewportScale: 'no', // iOS only
+          allowInlineMediaPlayback: 'no',// iOS only
+          presentationstyle: 'pagesheet',// iOS only
+          fullscreen: 'yes',// Windows only
+        }
+        this.inApp.create(fileUrl, '_system', IabOptions);
+      } else {
+        this.fileService.checkDirDownload(fileUrl, file._source.title)
+          .then((filepath) => {
+            this.translateService.get('fileSavedMsg')
+              .subscribe((text) => {
+                let translated = 'File saved in';
+                if (text) {
+                  translated = text;
+                }
+                this.toastrService.presentToast(translated + ' ' + filepath);
 
-              this.localStorageService.getIonicStorage(AppConstant.Downloads) // Temporary storage in ionic-storage
-                .pipe(takeUntil(this._unsubscribeServices))
-                .subscribe((downloaded) => {
-                  if (!downloaded || downloaded.length === undefined) {
-                    const data = [];
-                    data.push(file);
-                    this.localStorageService.setIonicStorage(AppConstant.Downloads, data);
-                  } else if (downloaded.length !== undefined) {
-                    downloaded.push(file);
-                    this.localStorageService.setIonicStorage(AppConstant.Downloads, downloaded);
-                  }
-                });
+                this.localStorageService.getIonicStorage(AppConstant.Downloads) // Temporary storage in ionic-storage
+                  .pipe(takeUntil(this._unsubscribeServices))
+                  .subscribe((downloaded) => {
+                    if (!downloaded || downloaded.length === undefined) {
+                      const data = [];
+                      data.push(file);
+                      this.localStorageService.setIonicStorage(AppConstant.Downloads, data);
+                    } else if (downloaded.length !== undefined) {
+                      downloaded.push(file);
+                      this.localStorageService.setIonicStorage(AppConstant.Downloads, downloaded);
+                    }
+                  });
 
-            });
-        })
-        .catch((err) => {
-          this.toastrService.presentToast(err.message);
-        });
+              });
+          })
+          .catch((err) => {
+            this.toastrService.presentToast(err.message);
+          });
+      }
+
     }
   }
 

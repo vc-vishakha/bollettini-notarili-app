@@ -1,35 +1,42 @@
 {
   "project_info": {
-    "project_number": "452470009134",
-    "firebase_url": "https://bollettini-notarili.firebaseio.com",
-    "project_id": "bollettini-notarili",
-    "storage_bucket": "bollettini-notarili.appspot.com"
+    "project_number": "104606958058",
+    "firebase_url": "https://bollettini-notarili-f6e3c.firebaseio.com",
+    "project_id": "bollettini-notarili-f6e3c",
+    "storage_bucket": "bollettini-notarili-f6e3c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:452470009134:android:e06181d921d4a2a6dfdebf",
+        "mobilesdk_app_id": "1:104606958058:android:5a506dfe1068c58b1db293",
         "android_client_info": {
-          "package_name": "io.ionic.bollettininotarili"
+          "package_name": "android.bollettininotarili"
         }
       },
       "oauth_client": [
         {
-          "client_id": "452470009134-9pehn8s4h8fo2gf7rmodqmdiro5lm78n.apps.googleusercontent.com",
+          "client_id": "104606958058-2mjlq85le8jc1rqqouid3tcq66u3pumh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBri5TbXnJjt_xdjoOze69zulCFGfnT0iY"
+          "current_key": "AIzaSyCSw2SAYn2NovfJygFphiJz5n7wUzGhy7c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "452470009134-9pehn8s4h8fo2gf7rmodqmdiro5lm78n.apps.googleusercontent.com",
+              "client_id": "104606958058-2mjlq85le8jc1rqqouid3tcq66u3pumh.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "104606958058-781sbktq82vknenj5f09d303bfm2imot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ios.bollettininotarili"
+              }
             }
           ]
         }
