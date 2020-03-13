@@ -1,8 +1,10 @@
 <ion-content fullscreen padding>
   <ion-list scroll="false" no-padding>
     <ion-list-header>
-      <ion-input class="file-search" #searchInput="ngModel" [(ngModel)]="search" name="search" type="search"
+      <form class="search-form" (ngSubmit)="searchSubmit()">
+        <ion-input class="file-search" #searchInput="ngModel" [(ngModel)]="search" name="search" type="search"
         placeholder="{{ 'searchFile' | translate }}..."></ion-input>
+      </form>
     </ion-list-header>
 
     <ion-item lines="none">

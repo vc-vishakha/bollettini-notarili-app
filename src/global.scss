@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -25,14 +25,22 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-
 ion-router-outlet {
-  :not(app-login):not(app-reset-password).ion-page{
+  :not(app-login):not(app-reset-password).ion-page {
     margin-top: 70px !important;
   }
 }
-.keywords{
-  em{
+.keywords {
+  em {
     font-weight: bold !important;
+  }
+}
+.sc-ion-input-ios-s {
+  &.file-search {
+    margin-top: 5px;
+    height: 40px;
+    font-weight: 300;
+    font-size: 15px;
+    padding: 0 0 0 10px !important;
   }
 }

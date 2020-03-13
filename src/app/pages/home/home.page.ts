@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 import { Platform } from '@ionic/angular';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 @Component({
   selector: 'app-home',
@@ -39,7 +40,8 @@ export class HomePage implements OnInit {
     private translateService: TranslateService,
     private router: Router,
     public inApp: InAppBrowser,
-    private platform: Platform
+    private platform: Platform,
+    private keyboard: Keyboard
   ) { }
 
   ngOnInit() { }
@@ -306,6 +308,10 @@ export class HomePage implements OnInit {
           this.localStorageService.setIonicStorage(AppConstant.Downloads, downloaded);
         }
       });
+  }
+
+  searchSubmit(){
+    this.keyboard.hide();
   }
 
   ionViewDidLeave() {
