@@ -43,7 +43,9 @@ export class ToastrService {
       message: msg,
       duration: this.duration,
       position: toastPosition,
-      buttons
+      buttons,
+      color: 'medium',
+      mode: 'ios'
     });
     await toast.present();
   }
