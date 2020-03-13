@@ -1,8 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="ios.bollettininotarili" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<!-- <widget id="io.ionic.bollettininotarili" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0"> Android Local -->
+<!-- <widget id="io.ionic.bollettininotar" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0"> IOS Local-->
+<!-- <widget id="android.bollettininotarili" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0"> Android Live -->
+<widget id="ios.bollettininotarili" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0"> <!--IOS Live-->
     <name>Bollettini Notarili</name>
     <description>Bollettini Notarili</description>
-    <author email="hi@ionicframework.com" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <author email="viitorcloud.evolware@gmail.com" href="https://viitorcloud.com/">ViitorCloud Angular+Ionic Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

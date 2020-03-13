@@ -94,6 +94,7 @@ export class HomePage implements OnInit {
     } else if (action === 'download') {
 
       if (this.platform.is('ios')) {
+
         const IabOptions: InAppBrowserOptions = {
           location: 'yes',
           hidden: 'no',
@@ -112,7 +113,10 @@ export class HomePage implements OnInit {
           fullscreen: 'yes',// Windows only
         }
         this.inApp.create(fileUrl, '_system', IabOptions);
+        this.storeInOffline(file);
+
       } else {
+
         this.fileService.checkDirDownload(fileUrl, file._source.title)
           .then((filepath) => {
             this.translateService.get('fileSavedMsg')
@@ -123,18 +127,7 @@ export class HomePage implements OnInit {
                 }
                 this.toastrService.presentToast(translated + ' ' + filepath);
 
-                this.localStorageService.getIonicStorage(AppConstant.Downloads) // Temporary storage in ionic-storage
-                  .pipe(takeUntil(this._unsubscribeServices))
-                  .subscribe((downloaded) => {
-                    if (!downloaded || downloaded.length === undefined) {
-                      const data = [];
-                      data.push(file);
-                      this.localStorageService.setIonicStorage(AppConstant.Downloads, data);
-                    } else if (downloaded.length !== undefined) {
-                      downloaded.push(file);
-                      this.localStorageService.setIonicStorage(AppConstant.Downloads, downloaded);
-                    }
-                  });
+                this.storeInOffline(file);
 
               });
           })
@@ -298,6 +291,21 @@ export class HomePage implements OnInit {
     this._unsubscribeServices.complete();
     this._unsubscribeServices = new Subject();
     this.initSearch();
+  }
+
+  storeInOffline(file: FileModel) {
+    this.localStorageService.getIonicStorage(AppConstant.Downloads) // Temporary storage in ionic-storage
+      .pipe(takeUntil(this._unsubscribeServices))
+      .subscribe((downloaded) => {
+        if (!downloaded || downloaded.length === undefined) {
+          const data = [];
+          data.push(file);
+          this.localStorageService.setIonicStorage(AppConstant.Downloads, data);
+        } else if (downloaded.length !== undefined) {
+          downloaded.push(file);
+          this.localStorageService.setIonicStorage(AppConstant.Downloads, downloaded);
+        }
+      });
   }
 
   ionViewDidLeave() {

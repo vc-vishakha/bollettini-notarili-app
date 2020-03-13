@@ -34,7 +34,7 @@ export class FileService {
     return new Promise((resolve, reject) => {
       const fileTransfer = this.transfer.create();
       let message: string;
-      if (this.platform.is('android')) {
+      if (this.platform.is('cordova')) {
         this.file.checkDir(this.file.externalRootDirectory, AppConstant.FileStoreDir)
           .then(
             // Directory exists, check for file with the same name
