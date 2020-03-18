@@ -71,7 +71,7 @@ export class DownloadsPage implements OnInit {
       });
   }
 
-  fileDownloadAgain(file, filePath) {
+  fileDownloadAgain(file: FileModel, filePath: string) {
     let page = 1;
     page = file._source.location;
     if (file._source.location) {
@@ -79,20 +79,28 @@ export class DownloadsPage implements OnInit {
     }
     const fileUrl = this.baseUrl + filePath;
     this.fileService.checkDirDownload(fileUrl, filePath)
-      .then((filepath) => {
-        if (filepath !== '') {
+      .then((filepathURL) => {
+        if (filepathURL !== '' && filepathURL !== null) {
           this.translateService.get('fileSavedMsg')
             .subscribe((text) => {
               let translated = 'File saved in';
               if (text) {
                 translated = text;
               }
-              this.toastrService.presentToast(translated + ' ' + filepath);
+              this.toastrService.presentToast(translated + ' ' + filepathURL);
             });
         }
       })
       .catch((err) => {
-        this.toastrService.presentToast(err.message);
+        if ( err.message === undefined ) {
+          if ( err.code === 1 ) {
+            this.toastrService.presentToast('noPermissionDownload');
+          } else {
+            this.toastrService.presentToast('downloadError');
+          }
+        } else{
+          this.toastrService.presentToast(err.message);
+        }
       });
   }
 
