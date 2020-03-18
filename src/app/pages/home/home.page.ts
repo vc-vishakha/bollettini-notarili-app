@@ -10,7 +10,6 @@ import { ApiResponseModel, Category, FileModel } from 'src/app/core/models';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
-import { Platform } from '@ionic/angular';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 @Component({
@@ -40,7 +39,6 @@ export class HomePage implements OnInit {
     private translateService: TranslateService,
     private router: Router,
     public inApp: InAppBrowser,
-    private platform: Platform,
     private keyboard: Keyboard
   ) { }
 
@@ -83,7 +81,7 @@ export class HomePage implements OnInit {
       page = file._source.location;
     }
     const fileUrl = this.baseUrl + filePath;
-    // console.log('url', fileUrl);
+    console.log('url', fileUrl);
     // console.log('page', page);
 
     if (action === 'view') {
@@ -95,48 +93,35 @@ export class HomePage implements OnInit {
       this.router.navigate(['/file-view']);
     } else if (action === 'download') {
 
-      if (this.platform.is('ios')) {
-
-        const IabOptions: InAppBrowserOptions = {
-          location: 'yes',
-          hidden: 'no',
-          clearcache: 'yes',
-          clearsessioncache: 'yes',
-          zoom: 'yes', // Android only ,shows browser zoom controls
-          hardwareback: 'yes',
-          mediaPlaybackRequiresUserAction: 'no',
-          shouldPauseOnSuspend: 'no', // Android only
-          closebuttoncaption: 'Close', // iOS only
-          disallowoverscroll: 'no', // iOS only
-          toolbar: 'yes', // iOS only
-          enableViewportScale: 'no', // iOS only
-          allowInlineMediaPlayback: 'no',// iOS only
-          presentationstyle: 'pagesheet',// iOS only
-          fullscreen: 'yes',// Windows only
-        }
-        this.inApp.create(fileUrl, '_system', IabOptions);
-        this.storeInOffline(file);
-
-      } else {
-
-        this.fileService.checkDirDownload(fileUrl, file._source.title)
-          .then((filepath) => {
+      this.fileService.checkDirDownload(fileUrl, file._source.title)
+        .then((filepathURL) => {
+          console.log('filepathURL', filepathURL);
+          if (filepathURL !== '' && filepathURL !== null) {
             this.translateService.get('fileSavedMsg')
               .subscribe((text) => {
                 let translated = 'File saved in';
-                if (text) {
+                if (text !== undefined) {
                   translated = text;
                 }
-                this.toastrService.presentToast(translated + ' ' + filepath);
-
-                this.storeInOffline(file);
-
+                const msg = translated + ' ' + filepathURL;
+                console.log('msg', msg);
+                this.toastrService.presentToast(msg);
               });
-          })
-          .catch((err) => {
+          }
+          this.storeInOffline(file);
+        })
+        .catch((err) => {
+          console.log('errorr', err);
+          if ( err.message === undefined ) {
+            if ( err.code === 1 ) {
+              this.toastrService.presentToast('noPermissionDownload');
+            } else {
+              this.toastrService.presentToast('downloadError');
+            }
+          } else{
             this.toastrService.presentToast(err.message);
-          });
-      }
+          }
+        });
 
     }
   }
@@ -310,7 +295,7 @@ export class HomePage implements OnInit {
       });
   }
 
-  searchSubmit(){
+  searchSubmit() {
     this.keyboard.hide();
   }
 

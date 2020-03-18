@@ -1,14 +1,18 @@
 ion-item {
-    --background: #3880ff;
-    --color: #fff;
+    --background: #fff;
+    --color: rgb(15, 15, 15);
+    margin-right: 10px;
 }
 
-ion-button {
-    --background: #062f77;
-}
+// ion-button {
+//     --background: #062f77;
+// }
 
 .passwordIcon {
     font-size: 2rem !important;
     position: relative !important;
     margin: 0 auto !important;
+}
+.actions{
+  margin: 10px 0 0 15px;
 }

@@ -8,7 +8,6 @@ import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-    toasterMessage: string;
     constructor(
       private authService: AuthService,
       private toastService: ToastrService,
@@ -31,6 +30,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                 this.router.navigate(['/']);
               } else if (err.status === 402) {
                 this.toastService.presentToast('inactiveUser', 'top');
+              } else if (err.status === 404 && request.url.endsWith('user/login')) {
+                this.toastService.presentToast('invalidEmailPassword', 'top');
               } else if (err.status === 500) {
                 this.toastService.presentToast('internalServer', 'top');
                 // this.router.navigate(['/']);

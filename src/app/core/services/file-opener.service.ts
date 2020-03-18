@@ -3,6 +3,7 @@ import { AppConstant } from 'src/app/core/constants/app-constants';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { Platform } from '@ionic/angular';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class FileService {
     // tslint:disable-next-line: deprecation
     private transfer: FileTransfer,
     private file: File,
-    private platform: Platform
+    private platform: Platform,
+    public inApp: InAppBrowser,
   ) { }
 
   identifyMimeType(ext: string): string {
@@ -32,9 +34,15 @@ export class FileService {
    */
   checkDirDownload(url: string, filename: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      const fileTransfer = this.transfer.create();
-      let message: string;
-      if (this.platform.is('cordova')) {
+
+      if (this.platform.is('ios')) {
+
+        this.downloadInIOS(url);
+        resolve(null);
+
+      } else if (this.platform.is('cordova')) {
+        const fileTransfer = this.transfer.create();
+        let message: string;
         this.file.checkDir(this.file.externalRootDirectory, AppConstant.FileStoreDir)
           .then(
             // Directory exists, check for file with the same name
@@ -91,7 +99,30 @@ export class FileService {
         };
         reject(error);
       }
+
+
     });
+  }
+
+  downloadInIOS(fileUrl) {
+    const IabOptions: InAppBrowserOptions = {
+      location: 'yes',
+      hidden: 'no',
+      clearcache: 'yes',
+      clearsessioncache: 'yes',
+      zoom: 'yes', // Android only ,shows browser zoom controls
+      hardwareback: 'yes',
+      mediaPlaybackRequiresUserAction: 'no',
+      shouldPauseOnSuspend: 'no', // Android only
+      closebuttoncaption: 'Close', // iOS only
+      disallowoverscroll: 'no', // iOS only
+      toolbar: 'yes', // iOS only
+      enableViewportScale: 'no', // iOS only
+      allowInlineMediaPlayback: 'no',// iOS only
+      presentationstyle: 'pagesheet',// iOS only
+      fullscreen: 'yes',// Windows only
+    }
+    this.inApp.create(fileUrl, '_system', IabOptions);
   }
 
 }

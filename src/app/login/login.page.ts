@@ -7,7 +7,6 @@ import { Subject } from 'rxjs';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { AppConstant } from '../core/constants/app-constants';
 import { takeUntil } from 'rxjs/operators';
-import { ToastrService } from '../core/services/toastr.service';
 import { NgForm } from '@angular/forms';
 
 @Component({
@@ -34,12 +33,15 @@ export class LoginPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private localStorageService: LocalStorageService,
-    private toastrService: ToastrService
+    private localStorageService: LocalStorageService
   ) { }
 
   ngOnInit() {
     this.authService.logout(); // Remove all data if have any
+  }
+
+  ionViewDidEnter() {
+    this.localStorageService.removeIonicStorage(AppConstant.LocalStorageKeys.temporaryUserData);
     this.authService.deviceRegId
       .pipe(takeUntil(this.unSubscribeService))
       .subscribe((deviceRegistrationId: string) => {
@@ -60,7 +62,7 @@ export class LoginPage implements OnInit, OnDestroy {
     if (!this.loginForm.email || !this.loginForm.password) {
       return;
     }
-    const userEmail = this.loginForm.email.toLocaleLowerCase();
+    const userEmail = this.loginForm.email.toLocaleLowerCase().trim();
     const userPassword = this.loginForm.password;
 
     const params: any = {
@@ -72,6 +74,7 @@ export class LoginPage implements OnInit, OnDestroy {
     if (this.deviceRegistrationId) {
       params.params.applicationToken = this.deviceRegistrationId;
     }
+    this.requestProcess = true;
 
     this.authService.userLogin(this.loginAPI, params)
       .pipe(takeUntil(this.unSubscribeService))
@@ -91,16 +94,10 @@ export class LoginPage implements OnInit, OnDestroy {
         }
         f.resetForm();
       }, err => {
-        if (err) {
-          if (err.code === 404) {
-            this.toastrService.presentToast('invalidEmailPassword');
-          }
-        }
         this.requestProcess = false;
       }, () => {
         this.requestProcess = false;
       });
-    this.requestProcess = true;
   }
 
   ngOnDestroy() {

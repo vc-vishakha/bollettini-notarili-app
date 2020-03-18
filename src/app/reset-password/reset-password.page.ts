@@ -34,7 +34,9 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
   ) { }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  ionViewDidEnter() {
     this.localStorageService.getIonicStorage(AppConstant.LocalStorageKeys.temporaryUserData)
       .pipe(takeUntil(this.unSubscribeService))
       .subscribe((response) => {
@@ -66,7 +68,7 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
     this.requestProcess = true;
 
     const params = {
-      params:{
+      params: {
         password: this.changePswdForm.newPassword
       }
     };
@@ -87,6 +89,11 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.unSubscribeService.next();
+    this.unSubscribeService.complete();
+  }
+
+  ionViewDidLeave() {
     this.unSubscribeService.next();
     this.unSubscribeService.complete();
   }

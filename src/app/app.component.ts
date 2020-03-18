@@ -11,6 +11,7 @@ import { AuthService } from './core/services/auth.service';
 import { NetworkConnectionService } from './core/services/network-connection.service';
 import { PushNotificationService } from './core/services/push-notification.service';
 import { TranslationLoaderService } from './core/services/translation-loader.service';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +29,7 @@ export class AppComponent {
     private authService: AuthService,
     private translateService: TranslateService,
     private translationLoaderService: TranslationLoaderService,
+    private androidPermissions: AndroidPermissions
   ) {
     this.initializeApp();
     this.setLanguage();
@@ -40,6 +42,7 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       this.pushNotificationService.initPushNotification();
+      this.getAndroidPermissions();
     });
   }
 
@@ -77,5 +80,21 @@ export class AppComponent {
         this.isLoggedIn = false;
       }
     });
+  }
+
+  getAndroidPermissions() {
+    this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(
+      result => {
+        console.log('Has permission?', result.hasPermission);
+        if (result.hasPermission === false) {
+          this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
+          .then((value) => console.log('requestedPermission value', value))
+          .catch((err) => console.log('requestedPermission err', err));
+        }
+      },
+      err => {
+        this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE);
+      }
+    );
   }
 }

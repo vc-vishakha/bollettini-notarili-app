@@ -80,15 +80,16 @@ export class DownloadsPage implements OnInit {
     const fileUrl = this.baseUrl + filePath;
     this.fileService.checkDirDownload(fileUrl, filePath)
       .then((filepath) => {
-        this.translateService.get('fileSavedMsg')
-          .subscribe((text) => {
-            let translated = 'File saved in';
-            if (text) {
-              translated = text;
-            }
-            this.toastrService.presentToast(translated + ' ' + filepath);
-
-          });
+        if (filepath !== '') {
+          this.translateService.get('fileSavedMsg')
+            .subscribe((text) => {
+              let translated = 'File saved in';
+              if (text) {
+                translated = text;
+              }
+              this.toastrService.presentToast(translated + ' ' + filepath);
+            });
+        }
       })
       .catch((err) => {
         this.toastrService.presentToast(err.message);

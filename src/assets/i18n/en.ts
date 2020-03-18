@@ -37,5 +37,8 @@ export const locale = {
     backToHome: 'Back to home',
     showAllPages: 'Show all pages',
     pdfFailError: 'Failed to load pdf document',
+    loginToYourAccount: 'Login to your account',
+    noPermissionDownload: 'È stato negato il permesso di scaricare il file sul dispositivo',
+    downloadError: 'Errore durante il download del file',
   },
 };
