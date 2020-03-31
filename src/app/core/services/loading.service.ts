@@ -33,7 +33,7 @@ export class LoadingService {
       message: msg,
       translucent: true,
       cssClass: 'custom-class custom-loading',
-      backdropDismiss: false
+      backdropDismiss: true
     });
     await this.loading.present();
   }

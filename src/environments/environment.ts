@@ -6,10 +6,11 @@ export const environment = {
   defaultLanguage: 'en',
   production: false,
   baseUrl: 'http://localhost:8100/',
-  serverUrl: 'http://192.168.1.223:4010/',
-  fileBaseUrl: 'http://192.168.1.223:4010/upload/documents/',
+  // fileBaseUrl: 'http://10.150.1.7:3300/upload/documents/',
   // serverUrl: 'http://10.150.1.7:3300/',
-  // fileBaseUrl: 'http://10.150.1.7:3300/upload/documents/'
+  fileBaseUrl: 'http://192.168.1.223:4010/upload/documents/',
+  serverUrl: 'http://192.168.1.223:4010/'
+
 };
 
 /*

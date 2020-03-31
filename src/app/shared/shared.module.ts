@@ -4,6 +4,8 @@ import { SharedMaterialModule } from './shared-material.module';
 import { SharedFormsModule } from './shared-forms.module';
 import { CoreModule } from '../core/core.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ValidFileService } from '../core/services/valid-file.pipe';
+import { LayoutModule } from '../core/layout/layout.module';
 
 @NgModule({
   imports: [
@@ -11,16 +13,19 @@ import { TranslateModule } from '@ngx-translate/core';
     CoreModule,
     SharedMaterialModule,
     SharedFormsModule,
-    TranslateModule,
+    // TranslateModule,
+    LayoutModule
   ],
   exports: [
     RouterModule,
     CoreModule,
     SharedMaterialModule,
     SharedFormsModule,
-    TranslateModule,
+    // TranslateModule,
+    ValidFileService,
+    LayoutModule
   ],
-  declarations: [],
+  declarations: [ValidFileService],
   providers: [],
 })
 export class SharedModule { }

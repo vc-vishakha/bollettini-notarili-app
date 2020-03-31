@@ -1,7 +1,30 @@
-<ion-content padding>
+<ion-content>
+  <div class="auth-contain">
+    <div class="contain-main">
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="">
+      </div>
+      <h2>{{'loginToYourAccount' | translate}}</h2>
+      <form class="login-form" #f="ngForm" novalidate (ngSubmit)="f.form.valid && login(f)">
+        <div class="form-field">
+          <ion-input name="email" type="text" placeholder="your@email.com" [(ngModel)]="loginForm.email"
+            #password="ngModel" autocomplete="on" required tabindex="1" clearOnEdit="false"></ion-input>
+        </div>
+        <div class="form-field">
+          <ion-input class="password" name="password" [type]="passwordType" placeholder="{{'password' | translate}}"
+            [(ngModel)]="loginForm.password" #password="ngModel" autocomplete="on" required minlength="6" tabindex="2"
+            [ngClass]="{ 'is-invalid': password.invalid }" clearOnEdit="false"></ion-input>
+          <ion-icon item-end [name]="passwordIcon" class="passwordIcon" (click)='hideShowPassword()'></ion-icon>
+        </div>
+        <div class="form-action">
+          <ion-button size="large" type="submit" color="primary" [disabled]="requestProcess || f.form.invalid">{{'login' | translate}}
+          </ion-button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-  <form class="login-form" #f="ngForm" novalidate (ngSubmit)="f.form.valid && login(f)">
-    <ion-grid>
+  <!-- <ion-grid>
       <ion-row color="light" justify-content-center>
         <ion-col align-self-center size-md="6" size-lg="5" size-xs="12" color="light">
           <div text-center>
@@ -31,7 +54,7 @@
       <ion-row>
 
       </ion-row>
-    </ion-grid>
-  </form>
+    </ion-grid> -->
+
 
 </ion-content>

@@ -1,0 +1,14 @@
+<ion-content>
+  <ion-item (click)="goToProfile()" lines="none">
+    <ion-icon name="person-circle-outline"></ion-icon>
+    <ion-label>{{'myProfile' | translate}}</ion-label>
+  </ion-item>
+  <!-- <ion-item (click)="goToBookmarks()" lines="none">
+    <ion-icon name="star"></ion-icon>
+    <ion-label>{{ 'bookmarks' |translate }}</ion-label>
+  </ion-item> -->
+  <ion-item (click)="logout()" lines="none">
+    <ion-icon name="log-out-outline"></ion-icon>
+    <ion-label>{{'logout' | translate}}</ion-label>
+  </ion-item>
+</ion-content>

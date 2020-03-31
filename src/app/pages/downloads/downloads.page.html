@@ -1,13 +1,19 @@
+<app-header></app-header>
 <ion-content fullscreen padding>
   <ion-list scroll="false" no-padding>
 
-    <ion-item *ngFor="let file of downloadedFiles; let i = index;">
+    <!--  <ion-item *ngFor="let file of downloadedFiles; let i = index;" (click)="openfile(file)">
       <ion-label>
         <h2>
           {{file?._source?.title}}
-          <!-- <span class="category">{{file?.categoryId?.name}}</span> -->
+          <span class="category">{{file?.categoryId?.name}}</span>
           <span class="file-icon">
-            <ion-icon name="download-outline" (click)="download(file, i)"></ion-icon>
+            <ion-icon name="close-circle-outline" (click)="$event.stopPropagation(); removeDownload(i)">
+            </ion-icon>
+          </span>
+          &nbsp;
+          <span class="file-icon">
+            <ion-icon name="download-outline" (click)="$event.stopPropagation(); download(file)"></ion-icon>
           </span>
         </h2>
       </ion-label>
@@ -17,7 +23,22 @@
       <ion-label>
         {{'noDownloads' | translate}}
       </ion-label>
-    </ion-item>
+    </ion-item> -->
 
+
+    <ion-card *ngFor="let file of downloadedFiles; let i = index;" (click)="openfile(file)">
+      <div class="download-list">
+        {{file?._source?.title}}
+      </div>
+      <div class="icon-box">
+        <ion-icon name="download-outline" (click)="$event.stopPropagation(); download(file)"></ion-icon>
+        <ion-icon name="close-circle-outline" (click)="$event.stopPropagation(); removeDownload(i)">
+        </ion-icon>
+      </div>
+    </ion-card>
+
+    <ion-card *ngIf="downloadedFiles.length === 0">
+      <ion-card-content class="download-list">{{'noDownloads' | translate}}</ion-card-content>
+    </ion-card>
   </ion-list>
 </ion-content>

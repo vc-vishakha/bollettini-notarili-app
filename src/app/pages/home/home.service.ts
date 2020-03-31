@@ -12,6 +12,7 @@ export class HomeService {
   categoryApi = 'user/category';
   bookmarkApi = 'user/bookmark/create';
   fileFromIdApi = 'user/get-filename';
+  setDownloadsApi = 'user/download/create';
 
   constructor(
     private httpClient: HttpClient,
@@ -31,5 +32,9 @@ export class HomeService {
 
   getFileFormId(params: any): Observable<ApiResponseModel<SingleFile>> {
     return this.httpClient.post<ApiResponseModel<SingleFile>>(this.fileFromIdApi, params);
+  }
+
+  setFileDownloads(params: any): Observable<ApiResponseModel<any>> {
+    return this.httpClient.post<ApiResponseModel<any>>(this.setDownloadsApi, params);
   }
 }

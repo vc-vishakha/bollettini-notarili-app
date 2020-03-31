@@ -3,6 +3,15 @@
     <!-- <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons> -->
-    <ion-title class="text-center app-title">{{appName}}</ion-title>
+    <div class="logo-header">
+      <img src="assets/images/logo.png" alt="">
+    </div>
+
+    <!-- <ion-title class="text-center app-title">
+      {{appName}}
+    </ion-title> -->
+
+    <ion-icon slot="end" name="ellipsis-vertical-outline" (click)="presentPopover($event)"></ion-icon>
+
   </ion-toolbar>
 </ion-header>

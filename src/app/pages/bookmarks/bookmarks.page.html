@@ -1,15 +1,16 @@
+<app-header></app-header>
 <ion-content fullscreen padding>
   <ion-list scroll="false" no-padding>
 
-    <ion-item *ngFor="let file of bookmarkedFiles; let i = index;">
-      <ion-label>
+    <!-- <ion-item *ngFor="let file of bookmarkedFiles; let i = index;" (click)="openFile(file)">
+      <ion-label class="file-main-box">
         <h2>
-          {{file?.bookmarkFileId?.fileID?.filePath}}
-          <span class="file-icon">
-            <ion-icon name="close-circle-outline" (click)="$event.stopPropagation(); removeBookmark(file)">
-            </ion-icon>
-          </span>
+          {{file?.bookmarkFileId?.fileID?.filePath | validFile}}
         </h2>
+        <span class="file-icon">
+          <ion-icon name="close-circle-outline" (click)="$event.stopPropagation(); removeBookmark(file)">
+          </ion-icon>
+        </span>
       </ion-label>
     </ion-item>
 
@@ -17,7 +18,19 @@
       <ion-label>
         {{'noBookmarks' | translate}}
       </ion-label>
-    </ion-item>
+    </ion-item> -->
+    <ion-card *ngFor="let file of bookmarkedFiles; let i = index;" (click)="openFile(file)">
+      <ion-card-content>
+        {{file?.bookmarkFileId?.fileID?.filePath}}
+        <ion-icon name="close-circle-outline" (click)="$event.stopPropagation(); removeBookmark(file)">
+        </ion-icon>
+      </ion-card-content>
+    </ion-card>
+    <ion-card *ngIf="bookmarkedFiles.length === 0">
+      <ion-card-content>
+        {{'noBookmarks' | translate}}
+      </ion-card-content>
+    </ion-card>
 
   </ion-list>
 </ion-content>

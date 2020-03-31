@@ -1,0 +1,33 @@
+ion-button{
+  margin-left: 15px;
+  margin-top: 10px;
+  ion-icon{
+    margin-left: 5px;
+  }
+}
+.text-capitalize{
+  text-transform: capitalize;
+}
+ion-item{
+  padding-right: 10px;
+}
+ion-list {
+  background: #e4ebf6;
+}
+ion-card {
+  padding: 20px 10px;
+}
+.label {
+  color: #2b2829;
+  font-size: 16px;
+  font-weight: 600;
+}
+.profile-box {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #000;
+}
+.text-content {
+  margin-left: 10px;
+  font-size: 16px;
+}

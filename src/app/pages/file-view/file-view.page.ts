@@ -3,6 +3,7 @@ import { AppConstant } from 'src/app/core/constants/app-constants';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { ToastrService } from '../../core/services/toastr.service';
 import { LoadingService } from './../../core/services/loading.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-file-view',
@@ -16,11 +17,14 @@ export class FileViewPage implements OnInit {
   showAllPages = false;
   fileData: { fileUrl: string, page: number };
   isDisplayFile = false;
+  zoomTo = 0.80;
+  routePage = 'home';
 
   constructor(
     private localStorageService: LocalStorageService,
     private loadingService: LoadingService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -38,6 +42,14 @@ export class FileViewPage implements OnInit {
           }
         }
       });
+
+    const pageName = this.activatedRoute.snapshot.params.page;
+    if (pageName !== undefined) {
+      if (pageName === 'bookmarks') {
+        this.routePage = pageName;
+        this.showAllPages = true;
+      }
+    }
   }
 
   showAll() {
@@ -51,7 +63,9 @@ export class FileViewPage implements OnInit {
 
   onPDFRender() {
     this.loadingService.hideLoading();
-    this.isDisplayFile = true;
+    if (this.routePage === 'home') {
+      this.isDisplayFile = true;
+    }
   }
 
   onError() {
@@ -60,11 +74,23 @@ export class FileViewPage implements OnInit {
     this.isDisplayFile = false;
   }
 
+  zoom_in() {
+    this.zoomTo = Number((this.zoomTo + 0.25).toFixed(2));
+  }
+
+  zoom_out() {
+    if (this.zoomTo > 0.80) {
+      this.zoomTo = this.zoomTo - 0.25;
+    }
+  }
+
   ionViewDidLeave() {
     this.fileSrc = null;
     this.fileData = null;
     this.page = null;
     this.showAllPages = false;
+    this.zoomTo = 0.80;
+    this.routePage = 'home';
     this.localStorageService.removeIonicStorage(AppConstant.SelectedFile);
   }
 

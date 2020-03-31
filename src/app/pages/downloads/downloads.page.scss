@@ -1,16 +1,35 @@
-.page-no {
-  margin-left: 30px;
-  font-size: 12px;
+.download-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.category{
-  margin-left: 30px;
-  font-size: 13px;
-  font-weight: 600;
+ion-card{
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  ion-card-content{
+    font-size: 18px;
+    line-height: 22px;
+  }
 }
-.file-icon{
-  float: right;
-  margin: 5px;
-  ion-icon{
-    font-size: 24px;
+.icon-box{
+  display: flex;
+  align-items: center;
+}
+ion-icon{
+  font-size: 30px;
+  margin-right: 5px;
+  &:last-child {
+    margin-right: 0;
+    margin-top: 4px;
+  }
+}
+ion-list {
+  background: #e4ebf6;
+}
+@media(max-width:320px) {
+  ion-card-content{
+    font-size: 16px;
   }
 }

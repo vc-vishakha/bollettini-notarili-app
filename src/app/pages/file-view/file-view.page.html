@@ -1,14 +1,24 @@
+<app-header></app-header>
 <ion-content fullscreen scroll="false" no-padding>
   <div class="buttons">
-    <ion-button [routerLink]="['/home']">{{'backToHome' | translate}}</ion-button>
+    <ion-button [routerLink]="['/home']" *ngIf="routePage === 'home'">{{'backToHome' | translate}}</ion-button>
+    <ion-button [routerLink]="['/bookmarks']" *ngIf="routePage === 'bookmarks'">{{'backToBookmarks' | translate}}</ion-button>
     <ion-button (click)="showAll()" *ngIf="isDisplayFile">{{'showAllPages' | translate}}</ion-button>
   </div>
-  <!-- <iframe [src]='fileSrc' height="700px" width="900px" *ngIf="fileSrc"></iframe> -->
   <!-- <iframe [src]="fileSrc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope;" allowfullscreen
     *ngIf="fileSrc" height="700px" width="900px"></iframe> -->
   <div class="pdf-container" scrollY="true">
-    <pdf-viewer [src]="fileSrc" [page]="page" [show-all]="showAllPages" [show-borders]="true"
-      *ngIf="fileSrc" [fit-to-page]="true" (after-load-complete)="onPDFRender()" (error)="onError()">
+    <div class="zoom-section" *ngIf="isDisplayFile">
+      <ion-fab-button color="light" size="small" (click)="zoom_in()" title="Zoom In">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="light" size="small" (click)="zoom_out()" title="Zoom Out">
+        <ion-icon name="remove-outline"></ion-icon>
+      </ion-fab-button>
+    </div>
+    <pdf-viewer [src]="fileSrc" [page]="page" [show-all]="showAllPages" [show-borders]="true" [fit-to-page]="true"
+      [zoom]="zoomTo" (after-load-complete)="onPDFRender()" (error)="onError()" *ngIf="fileSrc">
+
     </pdf-viewer>
   </div>
 

@@ -10,6 +10,7 @@ import { LocalStorageService } from 'src/app/core/services/local-storage.service
 import { environment } from 'src/environments/environment';
 import { FileService } from './../../core/services/file-opener.service';
 import { ToastrService } from './../../core/services/toastr.service';
+import { Platform, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-downloads',
@@ -29,7 +30,9 @@ export class DownloadsPage implements OnInit {
     private toastrService: ToastrService,
     private http: HttpClient,
     private fileService: FileService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private platform: Platform,
+    public navCtrl: NavController,
   ) { }
 
   ngOnInit() { }
@@ -42,18 +45,19 @@ export class DownloadsPage implements OnInit {
           this.downloadedFiles = files;
         }
       });
+      // this.initializeBackButtonCustomHandler();
   }
 
-  download(file: FileModel, index: number) {
+  download(file: FileModel) {
     if (file._source.fileId) {
       // const fileUrl = 'http://192.168.1.223:4010/upload/documents/1583321057473.pdf';
-      this.getFileData(file);
+      this.getFileData(file, 'download');
     } else {
       this.toastrService.presentToast('noDocumentAvailable');
     }
   }
 
-  getFileData(file: FileModel) {
+  getFileData(file: FileModel, action: 'view' | 'download') {
     const fileParams = {
       params: {
         fileId: file._source.fileId
@@ -65,18 +69,23 @@ export class DownloadsPage implements OnInit {
         if (resp.code === 200) {
           const filePath = resp.data.filePath;
           if (filePath) {
-            this.fileDownloadAgain(file, filePath);
+            if (action === 'download') {
+              this.fileDownloadAgain(filePath);
+            } else {
+              const fileUrl = this.baseUrl + filePath;
+              this.fileService.downloadInIOS(fileUrl);
+            }
           }
         }
       });
   }
 
-  fileDownloadAgain(file: FileModel, filePath: string) {
-    let page = 1;
-    page = file._source.location;
-    if (file._source.location) {
-      page = file._source.location;
-    }
+  fileDownloadAgain(filePath: string) {
+    // let page = 1;
+    // page = file._source.location;
+    // if (file._source.location) {
+    //   page = file._source.location;
+    // }
     const fileUrl = this.baseUrl + filePath;
     this.fileService.checkDirDownload(fileUrl, filePath)
       .then((filepathURL) => {
@@ -92,16 +101,43 @@ export class DownloadsPage implements OnInit {
         }
       })
       .catch((err) => {
-        if ( err.message === undefined ) {
-          if ( err.code === 1 ) {
+        if (err.message === undefined) {
+          if (err.code === 1) {
             this.toastrService.presentToast('noPermissionDownload');
           } else {
             this.toastrService.presentToast('downloadError');
           }
-        } else{
+        } else {
           this.toastrService.presentToast(err.message);
         }
       });
+  }
+
+  removeDownload(i: number) {
+    if (this.downloadedFiles.length > 0) {
+      this.downloadedFiles.splice(i, 1);
+      this.localStorageService.setIonicStorage(AppConstant.Downloads, this.downloadedFiles);
+    }
+  }
+
+  openfile(file: FileModel) {
+    if (file._source.fileId) {
+      this.getFileData(file, 'view');
+    } else {
+      this.toastrService.presentToast('noDocumentAvailable');
+    }
+  }
+
+  initializeBackButtonCustomHandler() {
+    if (this.platform.is('android')) {
+      this.platform.ready().then(() => {
+        document.addEventListener('backbutton', () => {
+
+          console.log('download back')
+          this.navCtrl.back();
+        });
+      })
+    }
   }
 
   ionViewDidLeave() {

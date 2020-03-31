@@ -1,23 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Platform } from '@ionic/angular';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AppConstant } from 'src/app/core/constants/app-constants';
 import { LocalStorageService, FileService, ToastrService } from 'src/app/core/services';
 import { environment } from 'src/environments/environment';
 import { NgModel } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, switchMap, takeUntil, map, timeout } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, takeUntil, map } from 'rxjs/operators';
 import { Observable, Subject, of } from 'rxjs';
 import { HomeService } from './home.service';
 import { ApiResponseModel, Category, FileModel } from 'src/app/core/models';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
 
   @ViewChild('searchInput', { read: NgModel, static: true }) searchInput: NgModel;
   baseUrl = environment.fileBaseUrl;
@@ -27,7 +29,7 @@ export class HomePage implements OnInit {
   searchFromBookmark: boolean;
   customAlertOptions: any;
   categoryList: Category[] = [];
-  arr = Array;
+  userId: string;
 
   private _unsubscribeServices: Subject<any> = new Subject();
 
@@ -39,16 +41,32 @@ export class HomePage implements OnInit {
     private translateService: TranslateService,
     private router: Router,
     public inApp: InAppBrowser,
-    private keyboard: Keyboard
+    private keyboard: Keyboard,
+    private authService: AuthService,
+    private platform: Platform
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.authService.userSessionSubject
+      .pipe(takeUntil(this._unsubscribeServices))
+      .subscribe((data) => {
+        if (data !== undefined && data !== null && data._id !== undefined) {
+          this.userId = data._id;
+        }
+      });
+  }
 
   ionViewDidEnter() {
+    this.initPage();
+    // this.initializeBackButtonCustomHandler();
+  }
+
+  initPage() {
     this.localStorageService.removeIonicStorage(AppConstant.LocalStorageKeys.temporaryUserData);
     this.localStorageService.removeIonicStorage(AppConstant.SelectedFile);
 
     this.translateService.get('categories')
+      .pipe(takeUntil(this._unsubscribeServices))
       .subscribe((text) => {
         let translated = 'Categories';
         if (text) {
@@ -56,14 +74,17 @@ export class HomePage implements OnInit {
         }
         this.customAlertOptions = {
           header: translated,
-          translucent: true
+          translucent: true,
+          mode: 'ios'
         };
       });
 
     if (this.searchInput) {
       this.getCategoryList();
       this.initSearch();
+      this.searchUpdate();
     }
+
   }
 
   viewFile(file: FileModel) {
@@ -81,7 +102,7 @@ export class HomePage implements OnInit {
       page = file._source.location;
     }
     const fileUrl = this.baseUrl + filePath;
-    console.log('url', fileUrl);
+    // console.log('url', fileUrl);
     // console.log('page', page);
 
     if (action === 'view') {
@@ -95,7 +116,6 @@ export class HomePage implements OnInit {
 
       this.fileService.checkDirDownload(fileUrl, file._source.title)
         .then((filepathURL) => {
-          console.log('filepathURL', filepathURL);
           if (filepathURL !== '' && filepathURL !== null) {
             this.translateService.get('fileSavedMsg')
               .subscribe((text) => {
@@ -104,21 +124,20 @@ export class HomePage implements OnInit {
                   translated = text;
                 }
                 const msg = translated + ' ' + filepathURL;
-                console.log('msg', msg);
                 this.toastrService.presentToast(msg);
               });
           }
           this.storeInOffline(file);
         })
         .catch((err) => {
-          console.log('errorr', err);
-          if ( err.message === undefined ) {
-            if ( err.code === 1 ) {
+          // this.storeInOffline(file);
+          if (err.message === undefined) {
+            if (err.code === 1) {
               this.toastrService.presentToast('noPermissionDownload');
             } else {
               this.toastrService.presentToast('downloadError');
             }
-          } else{
+          } else {
             this.toastrService.presentToast(err.message);
           }
         });
@@ -141,6 +160,7 @@ export class HomePage implements OnInit {
         .subscribe((response) => {
           if (response.code === 201) {
             this.toastrService.presentToast('addedToBookmarks');
+            this.updateBookmarkDownload('isBookMarK', file);
           }
         })
 
@@ -183,6 +203,8 @@ export class HomePage implements OnInit {
         (err) => {
           if (err && err.code === undefined) { // server stopped
             this.initSearch();
+          } else {
+            this.searchedFiles = [];
           }
         }
       );
@@ -218,7 +240,14 @@ export class HomePage implements OnInit {
   /**
    * Search on category & bookmarks
    */
-  searchUpdate() {
+  searchUpdate(deSelectValue = false) {
+    if (deSelectValue === true) {
+      if (this.selectedCategory !== null) {
+        this.selectedCategory = null;
+      } else {
+        return;
+      }
+    }
     if (this.search) {
       // console.log('search');
       this.resetSubject();
@@ -235,7 +264,9 @@ export class HomePage implements OnInit {
               this.searchedFiles = [];
             }
           },
-          (err) => { }
+          () => {
+            this.searchedFiles = [];
+          }
         );
     }
   }
@@ -265,9 +296,13 @@ export class HomePage implements OnInit {
       .pipe(takeUntil(this._unsubscribeServices))
       .subscribe((resp) => {
         if (resp.code === 200) {
-          const filePath = resp.data.filePath;
-          if (filePath) {
-            this.fileActions(file, filePath, action);
+          if (resp.data) {
+            const filePath = resp.data.filePath;
+            if (filePath) {
+              this.fileActions(file, filePath, action);
+            }
+          } else {
+            this.toastrService.presentToast('somethingWentWrong');
           }
         }
       });
@@ -293,19 +328,83 @@ export class HomePage implements OnInit {
           this.localStorageService.setIonicStorage(AppConstant.Downloads, downloaded);
         }
       });
+
+    this.setDownloadsEffect(file);
   }
 
   searchSubmit() {
     this.keyboard.hide();
   }
 
-  ionViewDidLeave() {
+  destroyComp() {
     this.search = '';
     this.selectedCategory = null;
     this.searchFromBookmark = false;
     this.searchedFiles = [];
     this._unsubscribeServices.next();
     this._unsubscribeServices.complete();
+  }
+
+  ionViewDidLeave() {
+    // this.search = '';
+    // this.selectedCategory = null;
+    // this.searchFromBookmark = false;
+    // this.searchedFiles = [];
+    this.authService.userSessionSubject
+      .pipe(takeUntil(this._unsubscribeServices))
+      .subscribe((data) => {
+        if (data === undefined || data === null) {
+          this.destroyComp();
+        } else {
+          this._unsubscribeServices.next();
+          this._unsubscribeServices.complete();
+        }
+      });
+
+
+  }
+
+  setDownloadsEffect(file: FileModel) {
+    const params = {
+      params: {
+        downloadFileId: {
+          fileID: file._source.fileId
+        }
+      }
+    };
+    this.homeService.setFileDownloads(params)
+      .pipe(takeUntil(this._unsubscribeServices))
+      .subscribe((response) => {
+        if (response.code === 201) {
+          // added in api
+          this.updateBookmarkDownload('isDownload', file);
+        } else {
+          this.toastrService.presentToast('somethingWentWrong');
+        }
+      })
+  }
+
+  updateBookmarkDownload(type: 'isBookMarK' | 'isDownload', file: FileModel) {
+    if (file._source[type] !== undefined && file._source[type].length !== undefined) {
+      file._source[type].push(this.userId);
+    } else {
+      file._source[type] = [this.userId];
+    }
+  }
+
+  initializeBackButtonCustomHandler() {
+    if (this.platform.is('android')) {
+      this.platform.ready().then(() => {
+        document.addEventListener('backbutton', () => {
+          navigator[`app`].exitApp();
+          console.log('home back')
+        });
+      })
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroyComp();
   }
 
 }

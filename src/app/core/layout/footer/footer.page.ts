@@ -1,6 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-footer',
@@ -12,18 +11,12 @@ export class FooterPage implements OnInit {
   @Input() displayFooter: boolean;
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    private changeDetectRef: ChangeDetectorRef
+    private router: Router
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-    this.changeDetectRef.detectChanges();
-  }
-
+  // navigateToPage(page: string) {
+  //   this.router.navigate(['/' + page]);
+  // }
 }

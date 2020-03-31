@@ -5,3 +5,21 @@
   font-weight: 500 !important;
   font-size: 20px !important;
 }
+ion-icon{
+  margin-right: 15px;
+  font-size: 24px;
+}
+.logo-header{
+  width: 50px;
+    margin: 0 auto;
+    img {
+      width: 100%;
+      display: block;
+    }
+}
+ion-toolbar {
+  --background:#0163a5
+}
+ion-icon {
+  color: #ffffff;
+}

@@ -1,5 +1,5 @@
 export const environment = {
-  defaultLanguage: 'it',
+  defaultLanguage: 'en',
   production: true,
   baseUrl: 'http://localhost:8100/',
   serverUrl: 'http://10.150.1.7:3300/',

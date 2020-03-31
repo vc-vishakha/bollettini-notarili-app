@@ -16,6 +16,7 @@ import { File } from '@ionic-native/file/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +27,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
     IonicStorageModule.forRoot(),
 
     LayoutModule,
+    TranslateModule.forRoot(),
     AppRoutingModule,
     SharedModule,
   ],
