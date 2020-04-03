@@ -21,7 +21,7 @@
     </ion-item> -->
     <ion-card *ngFor="let file of bookmarkedFiles; let i = index;" (click)="openFile(file)">
       <ion-card-content>
-        {{file?.bookmarkFileId?.fileID?.filePath}}
+        {{file?.bookmarkFileId?.fileID?.userAddFileName}}
         <ion-icon name="close-circle-outline" (click)="$event.stopPropagation(); removeBookmark(file)">
         </ion-icon>
       </ion-card-content>

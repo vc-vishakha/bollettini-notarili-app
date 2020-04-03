@@ -4,6 +4,7 @@ export interface BookmarkedFileModel {
     fileID: {
       _id: string;
       filePath: string;
+      userAddFileName: string;
     }
   }
   _id: string;

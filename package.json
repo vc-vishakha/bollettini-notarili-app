@@ -32,7 +32,7 @@
         "@ionic/angular": "^5.0.4",
         "@ionic/storage": "^2.2.0",
         "@ngx-translate/core": "^12.1.2",
-        "cordova-android": "8.1.0",
+        "cordova-android": "^8.1.0",
         "cordova-plugin-android-permissions": "^1.0.2",
         "cordova-plugin-file-transfer": "^1.7.1",
         "cordova-plugin-inappbrowser": "^3.2.0",
@@ -88,6 +88,9 @@
             "cordova-plugin-file": {},
             "cordova-plugin-inappbrowser": {},
             "cordova-plugin-android-permissions": {}
-        }
+        },
+        "platforms": [
+            "android"
+        ]
     }
 }

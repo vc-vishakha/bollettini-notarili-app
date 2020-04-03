@@ -10,7 +10,7 @@ import { LocalStorageService } from 'src/app/core/services/local-storage.service
 import { environment } from 'src/environments/environment';
 import { FileService } from './../../core/services/file-opener.service';
 import { ToastrService } from './../../core/services/toastr.service';
-import { Platform, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-downloads',
@@ -23,6 +23,7 @@ export class DownloadsPage implements OnInit {
   baseUrl = environment.fileBaseUrl;
 
   fileFromIdApi = 'user/get-filename';
+  removeDownloadsApi = 'user/download/update/';
 
   private _unsubscribeServices: Subject<any> = new Subject();
   constructor(
@@ -31,7 +32,6 @@ export class DownloadsPage implements OnInit {
     private http: HttpClient,
     private fileService: FileService,
     private translateService: TranslateService,
-    private platform: Platform,
     public navCtrl: NavController,
   ) { }
 
@@ -43,9 +43,9 @@ export class DownloadsPage implements OnInit {
       .subscribe((files: FileModel[]) => {
         if (files) {
           this.downloadedFiles = files;
+          // console.log('this.downloaded files', this.downloadedFiles);
         }
       });
-      // this.initializeBackButtonCustomHandler();
   }
 
   download(file: FileModel) {
@@ -114,9 +114,8 @@ export class DownloadsPage implements OnInit {
   }
 
   removeDownload(i: number) {
-    if (this.downloadedFiles.length > 0) {
-      this.downloadedFiles.splice(i, 1);
-      this.localStorageService.setIonicStorage(AppConstant.Downloads, this.downloadedFiles);
+    if (this.downloadedFiles.length > 0 && this.downloadedFiles[i]._source._id) {
+      this.setDownloadsEffect(this.downloadedFiles[i], i);
     }
   }
 
@@ -128,16 +127,22 @@ export class DownloadsPage implements OnInit {
     }
   }
 
-  initializeBackButtonCustomHandler() {
-    if (this.platform.is('android')) {
-      this.platform.ready().then(() => {
-        document.addEventListener('backbutton', () => {
-
-          console.log('download back')
-          this.navCtrl.back();
-        });
+  setDownloadsEffect(file: FileModel, i: number) {
+    const params = {
+      params: {
+        fileID: file._source.fileId
+      }
+    };
+    this.http.put<ApiResponseModel<any>>(this.removeDownloadsApi + file._source._id, params)
+      .pipe(takeUntil(this._unsubscribeServices))
+      .subscribe((response) => {
+        if (response.code === 200) {
+          this.downloadedFiles.splice(i, 1);
+          this.localStorageService.setIonicStorage(AppConstant.Downloads, this.downloadedFiles);
+        } else {
+          this.toastrService.presentToast('somethingWentWrong');
+        }
       })
-    }
   }
 
   ionViewDidLeave() {

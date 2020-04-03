@@ -8,7 +8,7 @@ import { LocalStorageService } from 'src/app/core/services';
 import { Router } from '@angular/router';
 import { AppConstant } from 'src/app/core/constants/app-constants';
 import { environment } from 'src/environments/environment';
-import { Platform, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-bookmarks',
@@ -26,7 +26,6 @@ export class BookmarksPage implements OnInit {
     private bookmarksService: BookmarksService,
     private localStorageService: LocalStorageService,
     private router: Router,
-    private platform: Platform,
     public navCtrl: NavController,
   ) { }
 
@@ -34,7 +33,6 @@ export class BookmarksPage implements OnInit {
 
   ionViewDidEnter() {
     this.getBookmarks();
-    // this.initializeBackButtonCustomHandler();
   }
 
   getBookmarks() {
@@ -80,18 +78,6 @@ export class BookmarksPage implements OnInit {
       this.router.navigate(['/file-view/bookmarks']);
     } else {
       this.toastrService.presentToast('pdfFailError');
-    }
-  }
-
-  initializeBackButtonCustomHandler() {
-    if (this.platform.is('android')) {
-      this.platform.ready().then(() => {
-        document.addEventListener('backbutton', () => {
-
-          console.log('bookmark back')
-          this.navCtrl.back();
-        });
-      })
     }
   }
 

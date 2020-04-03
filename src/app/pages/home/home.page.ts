@@ -1,4 +1,3 @@
-import { Platform } from '@ionic/angular';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AppConstant } from 'src/app/core/constants/app-constants';
 import { LocalStorageService, FileService, ToastrService } from 'src/app/core/services';
@@ -43,7 +42,6 @@ export class HomePage implements OnInit, OnDestroy {
     public inApp: InAppBrowser,
     private keyboard: Keyboard,
     private authService: AuthService,
-    private platform: Platform
   ) { }
 
   ngOnInit() {
@@ -58,7 +56,6 @@ export class HomePage implements OnInit, OnDestroy {
 
   ionViewDidEnter() {
     this.initPage();
-    // this.initializeBackButtonCustomHandler();
   }
 
   initPage() {
@@ -127,10 +124,10 @@ export class HomePage implements OnInit, OnDestroy {
                 this.toastrService.presentToast(msg);
               });
           }
-          this.storeInOffline(file);
+          this.setDownloadsEffect(file);
         })
         .catch((err) => {
-          // this.storeInOffline(file);
+          // this.setDownloadsEffect(file);
           if (err.message === undefined) {
             if (err.code === 1) {
               this.toastrService.presentToast('noPermissionDownload');
@@ -328,8 +325,6 @@ export class HomePage implements OnInit, OnDestroy {
           this.localStorageService.setIonicStorage(AppConstant.Downloads, downloaded);
         }
       });
-
-    this.setDownloadsEffect(file);
   }
 
   searchSubmit() {
@@ -375,13 +370,15 @@ export class HomePage implements OnInit, OnDestroy {
     this.homeService.setFileDownloads(params)
       .pipe(takeUntil(this._unsubscribeServices))
       .subscribe((response) => {
-        if (response.code === 201) {
+        if (response.code === 201 && response.data !== undefined && response.data._id !== undefined) {
           // added in api
+          file._source._id = response.data._id;
           this.updateBookmarkDownload('isDownload', file);
+          this.storeInOffline(file);
         } else {
           this.toastrService.presentToast('somethingWentWrong');
         }
-      })
+      });
   }
 
   updateBookmarkDownload(type: 'isBookMarK' | 'isDownload', file: FileModel) {
@@ -389,17 +386,6 @@ export class HomePage implements OnInit, OnDestroy {
       file._source[type].push(this.userId);
     } else {
       file._source[type] = [this.userId];
-    }
-  }
-
-  initializeBackButtonCustomHandler() {
-    if (this.platform.is('android')) {
-      this.platform.ready().then(() => {
-        document.addEventListener('backbutton', () => {
-          navigator[`app`].exitApp();
-          console.log('home back')
-        });
-      })
     }
   }
 
