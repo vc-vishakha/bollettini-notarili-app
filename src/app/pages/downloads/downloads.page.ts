@@ -144,7 +144,7 @@ export class DownloadsPage implements OnInit {
 
   setDownloadsEffect(file: FileModel, i: number) {
     if (this.online === false){
-      this.toastrService.presentToast('');
+      this.toastrService.presentToast('removeDownloadError');
       return;
     }
       const params = {
