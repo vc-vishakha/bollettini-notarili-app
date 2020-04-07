@@ -201,6 +201,8 @@ export class HomePage implements OnInit, OnDestroy {
         (err) => {
           if (err && err.code === undefined) { // server stopped
             this.initSearch();
+          } else if(err.code === 404) {
+            this.initSearch();
           } else {
             this.searchedFiles = [];
           }
