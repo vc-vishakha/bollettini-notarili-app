@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { FileService } from './../../core/services/file-opener.service';
 import { ToastrService } from './../../core/services/toastr.service';
 import { NavController } from '@ionic/angular';
+import { NetworkConnectionService } from 'src/app/core/services';
 
 @Component({
   selector: 'app-downloads',
@@ -24,6 +25,7 @@ export class DownloadsPage implements OnInit {
 
   fileFromIdApi = 'user/get-filename';
   removeDownloadsApi = 'user/download/update/';
+  online: boolean;
 
   private _unsubscribeServices: Subject<any> = new Subject();
   constructor(
@@ -33,9 +35,15 @@ export class DownloadsPage implements OnInit {
     private fileService: FileService,
     private translateService: TranslateService,
     public navCtrl: NavController,
+    private networkService: NetworkConnectionService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.networkService.getNetworkStatus()
+      .subscribe((status: boolean) => {
+        this.online = status;
+      });
+  }
 
   ionViewDidEnter() {
     this.localStorageService.getIonicStorage(AppConstant.Downloads)
@@ -48,10 +56,11 @@ export class DownloadsPage implements OnInit {
       });
   }
 
-  download(file: FileModel) {
+  download(file: FileModel, index: number) {
     if (file._source.fileId) {
       // const fileUrl = 'http://192.168.1.223:4010/upload/documents/1583321057473.pdf';
-      this.getFileData(file, 'download');
+      // this.getFileData(file, 'download');
+      this.downloadOfflineFile(file, 'download', index); // Offline
     } else {
       this.toastrService.presentToast('noDocumentAvailable');
     }
@@ -70,7 +79,7 @@ export class DownloadsPage implements OnInit {
           const filePath = resp.data.filePath;
           if (filePath) {
             if (action === 'download') {
-              this.fileDownloadAgain(filePath);
+              this.fileDownloadAgain(filePath, file);
             } else {
               const fileUrl = this.baseUrl + filePath;
               this.fileService.downloadInIOS(fileUrl);
@@ -80,7 +89,7 @@ export class DownloadsPage implements OnInit {
       });
   }
 
-  fileDownloadAgain(filePath: string) {
+  fileDownloadAgain(filePath: string, file: FileModel, index?: number) {
     // let page = 1;
     // page = file._source.location;
     // if (file._source.location) {
@@ -95,6 +104,11 @@ export class DownloadsPage implements OnInit {
               let translated = 'File saved in';
               if (text) {
                 translated = text;
+              }
+              if (filepathURL) {
+                file._source.storedPath = filepathURL;
+                this.downloadedFiles[index] = file;
+                this.localStorageService.setIonicStorage(AppConstant.Downloads, this.downloadedFiles);
               }
               this.toastrService.presentToast(translated + ' ' + filepathURL);
             });
@@ -119,20 +133,25 @@ export class DownloadsPage implements OnInit {
     }
   }
 
-  openfile(file: FileModel) {
+  openfile(file: FileModel, index: number) {
     if (file._source.fileId) {
-      this.getFileData(file, 'view');
+      // this.getFileData(file, 'view');
+      this.downloadOfflineFile(file, 'view', index); // Offline
     } else {
       this.toastrService.presentToast('noDocumentAvailable');
     }
   }
 
   setDownloadsEffect(file: FileModel, i: number) {
-    const params = {
-      params: {
-        fileID: file._source.fileId
-      }
-    };
+    if (this.online === false){
+      this.toastrService.presentToast('');
+      return;
+    }
+      const params = {
+        params: {
+          fileID: file._source.fileId
+        }
+      };
     this.http.put<ApiResponseModel<any>>(this.removeDownloadsApi + file._source._id, params)
       .pipe(takeUntil(this._unsubscribeServices))
       .subscribe((response) => {
@@ -143,6 +162,25 @@ export class DownloadsPage implements OnInit {
           this.toastrService.presentToast('somethingWentWrong');
         }
       })
+  }
+
+  downloadOfflineFile(file: FileModel, action: 'view' | 'download', index: number) {
+    const filePath = file._source.filePath;
+    if (filePath) {
+      if (action === 'download') {
+        this.fileDownloadAgain(filePath, file, index);
+      } else {
+        if (file._source.storedPath) {
+          console.log('stored path');
+          const fileUrl = file._source.storedPath;
+          this.fileService.fileOpen(fileUrl);
+        } else {
+          console.log('online access');
+          const fileUrl = this.baseUrl + filePath; // online
+          this.fileService.downloadInIOS(fileUrl); // online
+        }
+      }
+    }
   }
 
   ionViewDidLeave() {

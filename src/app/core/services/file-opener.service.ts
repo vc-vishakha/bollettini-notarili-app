@@ -4,6 +4,7 @@ import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { Platform } from '@ionic/angular';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class FileService {
     private file: File,
     private platform: Platform,
     public inApp: InAppBrowser,
+    private fileOpenerService: FileOpener
   ) { }
 
   identifyMimeType(ext: string): string {
@@ -35,24 +37,31 @@ export class FileService {
   checkDirDownload(url: string, filename: string): Promise<string> {
     return new Promise((resolve, reject) => {
 
-      if (this.platform.is('ios')) {
+      // if (this.platform.is('ios')) {
 
-        this.downloadInIOS(url);
-        resolve(null);
+      //   this.downloadInIOS(url);
+      //   resolve(null);
 
-      } else if (this.platform.is('cordova')) {
+      // } else
+      if (this.platform.is('cordova')) {
+        let directory = '';
+        if (this.platform.is('ios')) {
+          directory = this.file.documentsDirectory;
+        } else {
+          directory = this.file.externalRootDirectory;
+        }
         const fileTransfer = this.transfer.create();
         let message: string;
-        this.file.checkDir(this.file.externalRootDirectory, AppConstant.FileStoreDir)
+        this.file.checkDir(directory, AppConstant.FileStoreDir)
           .then(
             // Directory exists, check for file with the same name
-            () => this.file.checkFile(this.file.externalRootDirectory, AppConstant.FileStoreDir + '/' + filename)
+            () => this.file.checkFile(directory, AppConstant.FileStoreDir + '/' + filename)
               .then(() => {
                 const timestamp = new Date().getTime();
                 const ext = filename.substr(filename.lastIndexOf('.') + 1);
                 const subs = filename.substring(0, filename.lastIndexOf(ext) - 1);
                 const newFileName = subs + '_' + timestamp + '.' + ext;
-                fileTransfer.download(url, this.file.externalRootDirectory + AppConstant.FileStoreDir + '/' + newFileName)
+                fileTransfer.download(url, directory + AppConstant.FileStoreDir + '/' + newFileName)
                   .then((entry) => {
                     message = entry.nativeURL;
                     resolve(message);
@@ -63,7 +72,7 @@ export class FileService {
               })
               // File does not exist yet, we can save normally
               .catch(err =>
-                fileTransfer.download(url, this.file.externalRootDirectory + AppConstant.FileStoreDir + '/' + filename)
+                fileTransfer.download(url, directory + AppConstant.FileStoreDir + '/' + filename)
                   .then((entry) => {
                     message = entry.nativeURL;
                     resolve(message);
@@ -74,10 +83,10 @@ export class FileService {
               ))
           .catch(
             // Directory does not exists, create a new one
-            err => this.file.createDir(this.file.externalRootDirectory, AppConstant.FileStoreDir, false)
+            err => this.file.createDir(directory, AppConstant.FileStoreDir, false)
               .then(response => {
                 // console.log('New folder created:  ' + response.fullPath);
-                fileTransfer.download(url, this.file.externalRootDirectory + AppConstant.FileStoreDir + '/' + filename)
+                fileTransfer.download(url, directory + AppConstant.FileStoreDir + '/' + filename)
                   .then((entry) => {
                     message = entry.nativeURL;
                     resolve(message);
@@ -123,6 +132,13 @@ export class FileService {
       fullscreen: 'yes',// Windows only
     }
     this.inApp.create(fileUrl, '_system', IabOptions);
+  }
+
+  fileOpen(filePath: string) {
+    console.log('filepath', filePath);
+    this.fileOpenerService.open(filePath, 'application/pdf')
+      .then(() => console.log(filePath + ' File is opened'))
+      .catch(e => console.log('Error opening file', e));
   }
 
 }

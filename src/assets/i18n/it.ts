@@ -47,6 +47,7 @@ export const locale = {
     logoutConfirm: 'Sei sicuro di voler uscire ?',
     confirm: 'Conferma',
     unselectCategory: 'Deseleziona',
-    exitMessage: `Premere di nuovo indietro per uscire dall'app`
+    exitMessage: `Premere di nuovo indietro per uscire dall'app`,
+    passwordPatternError: `La password deve contenere almeno 8 \n Almeno 1 numero \n Almeno 1 carattere maiuscolo \n Almeno 1 carattere minuscolo`
   },
 };

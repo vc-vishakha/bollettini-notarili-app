@@ -47,6 +47,8 @@ export const locale = {
     logoutConfirm: 'Are you sure you want to logout ?',
     confirm: 'Confirm',
     unselectCategory: 'Unselect',
-    exitMessage: 'Press back again to exit App'
+    exitMessage: 'Press back again to exit App',
+    passwordPatternError: `Password must contain minimum 8 characters \n At least 1 number \n At least 1 uppercase character \n At least 1 lowercase character`,
+    removeDownloadError: 'You must have internet connectivity to remove downloaded file',
   },
 };

@@ -17,6 +17,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { TranslateModule } from '@ngx-translate/core';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,6 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
     InAppBrowser,
     Keyboard,
     AndroidPermissions,
+    FileOpener,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

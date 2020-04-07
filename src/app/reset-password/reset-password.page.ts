@@ -24,6 +24,8 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
 
   changePasswordAPI = 'user/change-password';
   userData: any;
+  passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
+  patternError = false;
 
   private unSubscribeService: Subject<any> = new Subject();
 
@@ -61,10 +63,15 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
   changePassword(f: NgForm) {
     if (!this.changePswdForm.newPassword || !this.changePswdForm.confirmPassword) {
       return;
+    } else if (this.passwordPattern.test(this.changePswdForm.newPassword) === false) {
+      this.patternError = true;
+      return;
     } else if (this.changePswdForm.newPassword !== this.changePswdForm.confirmPassword) {
       this.toastService.presentToast('invalidConfirmPassword');
       return;
     }
+    this.patternError = false;
+    // console.log('submitted');
     this.requestProcess = true;
 
     const params = {

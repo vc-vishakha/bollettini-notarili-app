@@ -26,12 +26,12 @@
     </ion-item> -->
 
 
-    <ion-card *ngFor="let file of downloadedFiles; let i = index;" (click)="openfile(file)">
+    <ion-card *ngFor="let file of downloadedFiles; let i = index;" (click)="openfile(file, i)">
       <div class="download-list">
         {{file?._source?.title}}
       </div>
       <div class="icon-box">
-        <ion-icon name="download-outline" (click)="$event.stopPropagation(); download(file)"></ion-icon>
+        <ion-icon name="download-outline" (click)="$event.stopPropagation(); download(file, i)"></ion-icon>
         <ion-icon name="close-circle-outline" (click)="$event.stopPropagation(); removeDownload(i)">
         </ion-icon>
       </div>

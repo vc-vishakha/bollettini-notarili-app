@@ -122,9 +122,10 @@ export class HomePage implements OnInit, OnDestroy {
                 }
                 const msg = translated + ' ' + filepathURL;
                 this.toastrService.presentToast(msg);
+                file._source.filePath = filePath;
+                this.setDownloadsEffect(file, filepathURL);
               });
           }
-          this.setDownloadsEffect(file);
         })
         .catch((err) => {
           // this.setDownloadsEffect(file);
@@ -359,7 +360,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   }
 
-  setDownloadsEffect(file: FileModel) {
+  setDownloadsEffect(file: FileModel, filePathUrl?: string) {
     const params = {
       params: {
         downloadFileId: {
@@ -374,6 +375,9 @@ export class HomePage implements OnInit, OnDestroy {
           // added in api
           file._source._id = response.data._id;
           this.updateBookmarkDownload('isDownload', file);
+          if(filePathUrl){
+            file._source.storedPath = filePathUrl;
+          }
           this.storeInOffline(file);
         } else {
           this.toastrService.presentToast('somethingWentWrong');

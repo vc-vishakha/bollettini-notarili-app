@@ -22,6 +22,8 @@ export interface FileModel {
     isBookMarK?: string[],
     isDownload?: string[],
     _id?: string;
+    filePath?: string;
+    storedPath?: string;
   },
   highlight: {
     text: string[];
