@@ -22,6 +22,7 @@
         "@ionic-native/android-permissions": "^5.22.0",
         "@ionic-native/core": "^5.22.0",
         "@ionic-native/file": "^5.22.0",
+        "@ionic-native/file-opener": "^5.23.0",
         "@ionic-native/file-transfer": "^5.22.0",
         "@ionic-native/in-app-browser": "^5.22.0",
         "@ionic-native/keyboard": "^5.22.0",
@@ -33,7 +34,9 @@
         "@ionic/storage": "^2.2.0",
         "@ngx-translate/core": "^12.1.2",
         "cordova-android": "^8.1.0",
+        "cordova-ios": "^5.1.1",
         "cordova-plugin-android-permissions": "^1.0.2",
+        "cordova-plugin-file-opener2": "^3.0.0",
         "cordova-plugin-file-transfer": "^1.7.1",
         "cordova-plugin-inappbrowser": "^3.2.0",
         "cordova-sqlite-storage": "^4.0.0",
@@ -87,10 +90,12 @@
             "cordova-plugin-file-transfer": {},
             "cordova-plugin-file": {},
             "cordova-plugin-inappbrowser": {},
-            "cordova-plugin-android-permissions": {}
+            "cordova-plugin-android-permissions": {},
+            "cordova-plugin-file-opener2": {}
         },
         "platforms": [
-            "android"
+            "android",
+            "ios"
         ]
     }
 }

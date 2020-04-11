@@ -4,6 +4,11 @@ ion-tab-button {
     &:last-child {
         border: none;
     }
+    padding-bottom: var(--ion-safe-area-bottom,0);
+}
+ion-tab-bar {
+    padding-bottom: 0;
+    height: calc(50px + var(--ion-safe-area-bottom,0));
 }
 .tab-selected {
     background: #2d7eb7;

@@ -15,5 +15,10 @@ ion-toolbar > ion-icon{
     img {
       width: 100%;
       display: block;
+
     }
+}
+.platform-ios body {
+  padding-bottom: constant(safe-area-inset-top); /* Status bar height on iOS 11.0 */
+  padding-bottom: env(safe-area-inset-top); /* Status bar height on iOS 11+ */
 }
