@@ -171,11 +171,16 @@ export class DownloadsPage implements OnInit {
         this.fileDownloadAgain(filePath, file, index);
       } else {
         if (file._source.storedPath) {
-          console.log('stored path');
+          // console.log('stored path');
           const fileUrl = file._source.storedPath;
-          this.fileService.fileOpen(fileUrl);
+          this.fileService.fileOpen(fileUrl)
+            .then(() => console.log(fileUrl + ' File is opened'))
+            .catch(e => {
+              console.log('file open error', e);
+              this.toastrService.presentToast('fileNotInDevice');
+            });
         } else {
-          console.log('online access');
+          // console.log('online access');
           const fileUrl = this.baseUrl + filePath; // online
           this.fileService.downloadInIOS(fileUrl); // online
         }

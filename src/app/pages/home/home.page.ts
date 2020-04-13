@@ -21,6 +21,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 export class HomePage implements OnInit, OnDestroy {
 
   @ViewChild('searchInput', { read: NgModel, static: true }) searchInput: NgModel;
+  
   baseUrl = environment.fileBaseUrl;
   search: string;
   searchedFiles: FileModel[] = [];
@@ -69,10 +70,12 @@ export class HomePage implements OnInit, OnDestroy {
         if (text) {
           translated = text;
         }
+        
         this.customAlertOptions = {
           header: translated,
           translucent: true,
-          mode: 'ios'
+          mode: 'ios',
+          backdropDismiss: false
         };
       });
 
@@ -128,16 +131,17 @@ export class HomePage implements OnInit, OnDestroy {
           }
         })
         .catch((err) => {
+          console.log('errorrrr', err);
           // this.setDownloadsEffect(file);
-          if (err.message === undefined) {
-            if (err.code === 1) {
+          // if (err.message === undefined) {
+            if (err.code === 1 || err.code === 2) {
               this.toastrService.presentToast('noPermissionDownload');
             } else {
               this.toastrService.presentToast('downloadError');
             }
-          } else {
-            this.toastrService.presentToast(err.message);
-          }
+          // } else {
+          //   this.toastrService.presentToast(err.message);
+          // }
         });
 
     }
@@ -276,11 +280,17 @@ export class HomePage implements OnInit, OnDestroy {
    */
   getCategoryList() {
 
+    const selected = this.selectedCategory;
+    // this.selectedCategory = null;
     this.homeService.getCategoryList()
       .pipe(takeUntil(this._unsubscribeServices))
       .subscribe((categoryData: ApiResponseModel<Category[]>) => {
         if (categoryData.code === 200) {
           this.categoryList = categoryData.data;
+          // console.log(selected)
+          if(selected){
+            this.selectedCategory = selected;
+          }
         }
       });
 
