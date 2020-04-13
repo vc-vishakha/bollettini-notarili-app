@@ -5,6 +5,7 @@ import { File } from '@ionic-native/file/ngx';
 import { Platform } from '@ionic/angular';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class FileService {
     private file: File,
     private platform: Platform,
     public inApp: InAppBrowser,
-    private fileOpenerService: FileOpener
+    private fileOpenerService: FileOpener,
+    private androidPermissions: AndroidPermissions
   ) { }
 
   identifyMimeType(ext: string): string {
@@ -67,6 +69,9 @@ export class FileService {
                     resolve(message);
                   })
                   .catch((error) => {
+                    if(error !== undefined && (error.code === 1 || error.code === 2)){
+                      this.fileDownloadPermissionHandler();
+                    }
                     reject(error);
                   })
               })
@@ -78,6 +83,9 @@ export class FileService {
                     resolve(message);
                   })
                   .catch((error) => {
+                    if(error !== undefined && (error.code === 1 || error.code === 2)){
+                      this.fileDownloadPermissionHandler();
+                    }
                     reject(error);
                   })
               ))
@@ -92,6 +100,9 @@ export class FileService {
                     resolve(message);
                   })
                   .catch((error) => {
+                    if(error !== undefined && (error.code === 1 || error.code === 2)){
+                      this.fileDownloadPermissionHandler();
+                    }
                     reject(error);
                   });
 
@@ -135,10 +146,25 @@ export class FileService {
   }
 
   fileOpen(filePath: string) {
-    console.log('filepath', filePath);
-    this.fileOpenerService.open(filePath, 'application/pdf')
-      .then(() => console.log(filePath + ' File is opened'))
-      .catch(e => console.log('Error opening file', e));
+    // console.log('filepath', filePath);
+    return this.fileOpenerService.open(filePath, 'application/pdf')
+  }
+
+  fileDownloadPermissionHandler(){
+    console.log('fileDownloadPermissionHandler');
+    if (this.platform.is('android')) {
+      this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
+        .then(
+          result => {
+            if (result.hasPermission === false) {
+              this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE);
+            }
+          },
+          () => {
+            this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE);
+          }
+        );      
+    }
   }
 
 }
